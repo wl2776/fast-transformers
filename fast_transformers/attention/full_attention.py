@@ -59,7 +59,7 @@ class FullAttention(Module):
         # Extract some shapes and compute the temperature
         N, L, H, E = queries.shape
         _, S, _, D = values.shape
-        softmax_temp = self.softmax_temp or 1./sqrt(E)
+        softmax_temp = self.softmax_temp or 1./torch.sqrt(E)
 
         # Scale the queries instead of applying the softmax temperature to the
         # dot products
