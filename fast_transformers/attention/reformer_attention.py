@@ -7,8 +7,6 @@
 """Implement the Reformer attention from the paper
 "Reformer the efficient transformer"."""
 
-from math import sqrt
-
 import torch
 from torch.nn import Dropout, Module
 from torch.nn.init import normal_
@@ -128,7 +126,7 @@ class ReformerAttention(Module):
         # Extract the dimensions of query, key, value
         N, L, H, E = queries.shape
 
-        softmax_temp = self.softmax_temp or 1./sqrt(E)
+        softmax_temp = self.softmax_temp or 1./torch.sqrt(torch.tensor(E, dtype=torch.float32))
         # Create the mask
         mask = key_lengths.additive_matrix.unsqueeze(1).expand(N, L, L)
         if self.masked:

@@ -8,7 +8,6 @@
 and the traditional random Fourier features that approximate the RBF kernel.
 """
 
-from math import sqrt, log
 import warnings
 
 import torch
@@ -72,8 +71,8 @@ class RandomFourierFeatures(FeatureMap):
         self.query_dimensions = query_dimensions
         self.orthogonal = orthogonal
         self.softmax_temp = (
-            1/sqrt(query_dimensions) if softmax_temp is None
-            else softmax_temp
+            1/torch.sqrt(torch.tensor(query_dimensions, dtype=torch.float32)) if softmax_temp is None
+            else torch.tensor(softmax_temp)
         )
         self.redraw = redraw
         self.deterministic_eval = deterministic_eval
@@ -107,10 +106,10 @@ class RandomFourierFeatures(FeatureMap):
         self.register_buffer("omega", omega)
 
     def forward(self, x):
-        x = x * sqrt(self.softmax_temp)
+        x = x * torch.sqrt(self.softmax_temp)
         u = x.unsqueeze(-2).matmul(self.omega).squeeze(-2)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
-        return phi * sqrt(2/self.n_dims)
+        return phi * torch.sqrt(torch.tensor(2.0 / self.n_dims, dtype=torch.float32))
 
 
 class SmoothedRandomFourierFeatures(RandomFourierFeatures):
@@ -216,14 +215,14 @@ class Favor(RandomFourierFeatures):
                            "{!r}.").format(x.shape))
 
     def forward(self, x):
-        x = x * sqrt(self.softmax_temp)
+        x = x * torch.sqrt(self.softmax_temp)
         norm_x_squared = torch.einsum("...d,...d->...", x, x).unsqueeze(-1)
         u = x.unsqueeze(-2).matmul(self.omega).squeeze(-2)
 
         # Compute the offset for the exponential such that h(x) is multiplied
         # in logspace. In particular, we multiply with exp(-norm_x_squared/2)
         # and 1/sqrt(self.n_dims)
-        offset = norm_x_squared * 0.5 + 0.5 * log(self.n_dims)
+        offset = norm_x_squared * 0.5 + 0.5 * torch.log(torch.tensor(self.n_dims))
 
         # If stabilize is True then add the max norm per sequence in order to
         # ensure that exp_u1 and exp_u2 will be <1.
@@ -282,6 +281,6 @@ class GeneralizedRandomFeatures(RandomFourierFeatures):
 
     def forward(self, x):
         if self.softmax_temp != 1.0:
-            x = x * sqrt(self.softmax_temp)
+            x = x * torch.sqrt(self.softmax_temp)
         u = x.unsqueeze(-2).matmul(self.omega).squeeze(-2)
         return self.kernel_fn(u)

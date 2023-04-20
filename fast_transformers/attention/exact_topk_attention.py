@@ -8,8 +8,6 @@
 MultiHeadAttention module. Note that this module is to be used in conjuction
 with the AttentionLayer in order to work."""
 
-from math import sqrt
-
 import torch
 from torch.nn import Dropout, Module
 

@@ -6,8 +6,6 @@
 
 """Implement clustered self attention."""
 
-from math import sqrt
-
 import torch
 import torch.autograd
 from torch.nn import Dropout, Module
@@ -146,7 +144,7 @@ class ClusteredAttention(Module):
 
         N, H, L, E = queries.shape
         _, _, S, D = values.shape
-        softmax_temp = self.softmax_temp or 1./sqrt(E)
+        softmax_temp = self.softmax_temp or 1./torch.sqrt(torch.tensor(E, dtype=torch.float32))
 
         # Cluster the queries into groups
         groups, sorted_indx = self._create_query_groups(queries, query_lengths)

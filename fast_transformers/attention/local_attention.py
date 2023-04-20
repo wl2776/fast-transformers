@@ -5,8 +5,6 @@
 
 """Implement local context attention."""
 
-from math import sqrt
-
 import torch
 from torch.nn import Module, Dropout
 from torch.nn import functional as F
@@ -67,7 +65,7 @@ class LocalAttention(Module):
         N, L, H, E = queries.shape
         _, S, _, D = values.shape
         context = self.local_context
-        softmax_temp = self.softmax_temp or 1./sqrt(E)
+        softmax_temp = self.softmax_temp or 1./torch.sqrt(torch.tensor(E, dtype=torch.float32))
 
         # Permute the dimensions to NHLE instead of NLHE
         queries = queries.permute(0, 2, 1, 3).contiguous()

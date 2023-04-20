@@ -7,8 +7,6 @@
 """Implement the typical softmax attention as a recurrent module to speed up
 autoregressive inference. See fast_transformers.attention.full_attention ."""
 
-from math import sqrt
-
 import torch
 from torch.nn import Dropout, Module
 
@@ -46,7 +44,7 @@ class RecurrentFullAttention(Module):
         # Extract some shapes and compute the temperature
         N, H, E = query.shape
         _, _, D = value.shape
-        softmax_temp = self.softmax_temp or 1./sqrt(E)
+        softmax_temp = self.softmax_temp or 1./torch.sqrt(torch.tensor(E, dtype=torch.float32))
 
         # Aggregate the list of keys and values
         if state is not None:

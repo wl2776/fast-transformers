@@ -9,8 +9,6 @@ MultiHeadAttention module. Note that this module is to be used in conjuction
 with the `fast_transformers.attention.attention_layer.AttentionLayer` in order
 to work."""
 
-from math import sqrt
-
 import torch
 from torch.nn import Dropout, Module
 
@@ -59,7 +57,7 @@ class FullAttention(Module):
         # Extract some shapes and compute the temperature
         N, L, H, E = queries.shape
         _, S, _, D = values.shape
-        softmax_temp = self.softmax_temp or 1./torch.sqrt(E)
+        softmax_temp = self.softmax_temp or 1./torch.sqrt(torch.tensor(E, dtype=torch.float32))
 
         # Scale the queries instead of applying the softmax temperature to the
         # dot products

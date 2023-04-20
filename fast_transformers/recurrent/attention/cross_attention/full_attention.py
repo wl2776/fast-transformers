@@ -5,9 +5,6 @@
 
 """Implement the typical softmax attention as a recurrent cross attention
 module to speed up autoregressive decoding."""
-
-from math import sqrt
-
 import torch
 from torch.nn import Dropout, Module
 
@@ -42,7 +39,7 @@ class RecurrentCrossFullAttention(Module):
     def forward(self, query, keys, values, key_lengths, state=None):
         # Extract some shapes and compute the temperature
         N, H, E = query.shape
-        softmax_temp = self.softmax_temp or 1. / sqrt(E)
+        softmax_temp = self.softmax_temp or 1. / torch.sqrt(torch.tensor(E, dtype=torch.float32))
 
         # Extract the keys and values either from the arguments or the state
         if state is not None:
