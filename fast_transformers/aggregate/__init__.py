@@ -88,7 +88,7 @@ def clustered_broadcast(Y, groups, counts, factors, X=None):
             G = set_group(C, E)
             group_counts = counts.view(N, H, G, -1).sum(-1)
             block_counts = (group_counts + threads - 1) // threads
-            total_blocks = block_counts.sum().item()
+            total_blocks = block_counts.sum()
             indx_maps = torch.ones(
                 (total_blocks, 5),
                 device=X.device,

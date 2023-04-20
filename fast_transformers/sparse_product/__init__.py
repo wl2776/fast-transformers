@@ -194,7 +194,7 @@ class ClusteredSparseDotProduct(torch.autograd.Function):
                     dtype=torch.int32
                 )
                 counts_cumsum = counts.cumsum(-1).int()
-                total_blocks = block_counts.sum().item()
+                total_blocks = block_counts.sum()
 
             # Actually perform the dot product
             ClusteredSparseDotProduct.dot[device.type](
@@ -249,7 +249,7 @@ class ClusteredSparseDotProduct(torch.autograd.Function):
                 )
 
                 counts_cumsum = counts.cumsum(-1).int()
-                total_blocks = block_counts.sum().item()
+                total_blocks = block_counts.sum()
 
             # Actually perform the backward pass
             ClusteredSparseDotProduct.dot_backward[Q.device.type](
@@ -316,7 +316,7 @@ class ClusteredSparseWeightedAverage(torch.autograd.Function):
                     dtype=torch.int32
                 )
                 counts_cumsum = counts.cumsum(-1).int()
-                total_blocks = block_counts.sum().item()
+                total_blocks = block_counts.sum()
 
             # Compute the average
             ClusteredSparseWeightedAverage.avg[device.type](
@@ -370,7 +370,7 @@ class ClusteredSparseWeightedAverage(torch.autograd.Function):
                     dtype=torch.int32
                 )
                 counts_cumsum = counts.cumsum(-1).int()
-                total_blocks = block_counts.sum().item()
+                total_blocks = block_counts.sum()
 
             # Do sparse weighted average backward pass
             ClusteredSparseWeightedAverage.avg_backward[device.type](

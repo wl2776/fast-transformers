@@ -214,7 +214,7 @@ class ImprovedClusteredCausalAttention(Module):
         QK = torch.einsum("nhle,nhse->nhls", Q_grouped, keys)
         QK = QK + key_lengths.additive_matrix[:, None, None, :]
         # Set topk to minimum of key lengths if it is smaller than self.topk
-        cur_topk = min(self.topk, min(key_lengths.lengths).item())
+        cur_topk = torch.min(self.topk, torch.min(key_lengths.lengths))
         topk_values, topk = torch.topk(QK, cur_topk, sorted=False, dim=-1)
         assert topk.is_contiguous()
 

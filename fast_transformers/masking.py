@@ -179,7 +179,7 @@ class LengthMask(BaseMask):
         self._max_len = max_len or self._lengths.max()
 
         self._bool_matrix = None
-        self._all_ones = torch.all(self._lengths == self._max_len).item()
+        self._all_ones = torch.all((self._lengths == self._max_len).clone().detach())
 
     @property
     def bool_matrix(self):
