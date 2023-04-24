@@ -46,7 +46,7 @@ class TestSparseProductCUDA(unittest.TestCase):
         lengths = torch.full((10,), 100, dtype=torch.int32).cuda()
         topk = (torch.cumsum(torch.rand(10, 4, 100, 10)*10, dim=-1)).long().cuda()
 
-        A = torch.randn(10, 4, 100, 100).to(X.device).requires_grad_(False) 
+        A = torch.randn(10, 4, 100, 100, requires_grad=True).to(X.device)
         topk_v, topk = torch.topk(A, 10, dim=-1)
         topk = topk.contiguous()
 
@@ -81,7 +81,7 @@ class TestSparseProductCUDA(unittest.TestCase):
         X = torch.randn(N, H, L, E).cuda()
         Y = torch.randn(N, H, S, E).cuda()
 
-        A = torch.randn(N, H, L, S).to(X.device).requires_grad_(False) 
+        A = torch.randn(N, H, L, S, requires_grad=True).to(X.device)
         topk_v, topk = torch.topk(A, k, dim=-1)
         topk = topk.contiguous()
 

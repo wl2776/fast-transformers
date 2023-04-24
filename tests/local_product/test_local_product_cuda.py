@@ -132,8 +132,8 @@ class TestLocalProductCUDA(unittest.TestCase):
             GQ, GK = self.kernels[CP]["dot_backward"](Q, K, lengths, grad_in,
                                                         local_context)
 
-            Q = Q.requires_grad_(True)
-            K = K.requires_grad_(True)
+            Q.requires_grad_(True)
+            K.requires_grad_(True)
             QK = torch.full((N, H, L, local_context), -1e24,
                             dtype=torch.float32)
             for i in range(L):
@@ -271,8 +271,8 @@ class TestLocalProductCUDA(unittest.TestCase):
             grad_in = torch.ones(N, H, L, E).cuda()
             GA, GV = self.kernels[CP]["wa_backward"](A, V, grad_in)
 
-            A = A.requires_grad_(True)
-            V = V.requires_grad_(True)
+            A.requires_grad_(True)
+            V.requires_grad_(True)
             out = torch.zeros(N, H, L, E).cuda()
             for i in range(L):
                 start = i - local_context//2

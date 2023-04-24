@@ -35,10 +35,10 @@ class TestSparseWeightedAverage(unittest.TestCase):
         S = 3000
         E = 32
         k = 32
-        weights = torch.rand(N, H, L, k).to(self.device).requires_grad_(True)
-        values = torch.randn(N, H, S, E).to(self.device).requires_grad_(True)
+        weights = torch.rand(N, H, L, k, requires_grad=True).to(self.device)
+        values = torch.randn(N, H, S, E, requires_grad=True).to(self.device)
 
-        attn = torch.randn(N, H, L, S).to(self.device).requires_grad_(False) 
+        attn = torch.randn(N, H, L, S, requires_grad=True).to(self.device)
         topk_v, topk = torch.topk(attn, k, dim=-1)
 
         self._zero_grad(weights, values)
@@ -73,10 +73,10 @@ class TestSparseWeightedAverage(unittest.TestCase):
         E = 32
         k = 5
 
-        weights = torch.arange(0,k).expand(N, H, L, k).to(self.device).float().requires_grad_(True)
-        values = torch.arange(0,E).expand(N, H, L, E).to(self.device).float().requires_grad_(True)
+        weights = torch.arange(0,k).expand(N, H, L, k).to(self.device).float().requires_grad(True)
+        values = torch.arange(0,E).expand(N, H, L, E).to(self.device).float().requires_grad(True)
 
-        attn = torch.arange(0, S).expand(N, H, L, S).to(self.device).float().requires_grad_(False)
+        attn = torch.arange(0, S).expand(N, H, L, S).to(self.device).float().requires_grad(False)
         topk_v, topk = torch.topk(attn, k, dim=-1)
 
         values_selected = values[
@@ -100,10 +100,10 @@ class TestSparseWeightedAverage(unittest.TestCase):
         E = 32
         k = 32
 
-        weights = torch.rand(N, H, L, k).to(self.device).requires_grad_(True)
-        values = torch.randn(N, H, S, E).to(self.device).requires_grad_(True)
+        weights = torch.rand(N, H, L, k, requires_grad=True).to(self.device)
+        values = torch.randn(N, H, S, E, requires_grad=True).to(self.device)
         
-        attn = torch.randn(N, H, L, S).to(self.device).requires_grad_(False) 
+        attn = torch.randn(N, H, L, S, requires_grad=True).to(self.device)
         topk_v, topk = torch.topk(attn, k, dim=-1)
         topk = topk.contiguous()
         for i in range(2000):
@@ -128,10 +128,10 @@ class TestSparseWeightedAverage(unittest.TestCase):
         E = 32
         k = 32
 
-        weights = torch.rand(N, H, L, k).to(self.device).requires_grad_(True)
-        values = torch.randn(N, H, S, E).to(self.device).requires_grad_(True)
+        weights = torch.rand(N, H, L, k, requires_grad=True).to(self.device)
+        values = torch.randn(N, H, S, E, requires_grad=True).to(self.device)
 
-        attn = torch.randn(N, H, L, S).to(self.device).requires_grad_(False)
+        attn = torch.randn(N, H, L, S, requires_grad=True).to(self.device)
         topk_v, topk = torch.topk(attn, k, dim=-1)
         topk = topk.contiguous()
         for i in range(2000):
@@ -147,6 +147,7 @@ class TestSparseWeightedAverage(unittest.TestCase):
         t_sparse = s.elapsed_time(e)
 
         print('T_sparse Backward:{}'.format(t_sparse))
+
 
 if __name__ == "__main__":
     unittest.main()
